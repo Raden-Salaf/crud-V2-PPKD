@@ -56,7 +56,7 @@ if (isset($_GET['idDelete'])) {
                             <td>
                                 <a href="?page=user-create-edit&idEdit=<?= $r['id'] ?>" class="btn btn-success">Edit</a>
                                 <form action="?page=user&idDelete=<?= $r['id'] ?> ?>" method="post" class="d-inline">
-                                    <button class="btn btn-danger" onclick="return confirm('Yakin lu cu?')">Delete</button>
+                                    <button class="btn btn-danger" onclick="return confirm('Kowe Yakin Pora!?')">Delete</button>
                                 </form>
                             </td>
                         </tr>
