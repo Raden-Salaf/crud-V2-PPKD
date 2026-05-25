@@ -72,7 +72,7 @@ $menus = mysqli_query($koneksi, "SELECT * FROM menus WHERE parent_id IS NULL AND
             $menu_id = $menu["id"];
             $subMenus = mysqli_query($koneksi, "SELECT * FROM menus WHERE parent_id = '$menu_id' AND is_active =1 ORDER BY sort_order ASC");
 
-            $has_subMenus = mysqli_num_rows($subMenus);
+            // $has_subMenus = mysqli_num_rows($subMenus);
             ?>
             <!-- Dashboard -->
             <!-- <li class="menu-item">
@@ -100,7 +100,7 @@ $menus = mysqli_query($koneksi, "SELECT * FROM menus WHERE parent_id IS NULL AND
             </a>
         </li> -->
             <?php
-            $hasSubMenus = mysqli_num_rows($menus);
+            $hasSubMenus = mysqli_num_rows($subMenus);
             ?>
             <!-- Layouts -->
             <li class="menu-item">

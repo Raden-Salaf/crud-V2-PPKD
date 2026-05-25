@@ -19,3 +19,8 @@ function getLabel($status)
             break;
     }
 }
+
+function inputFailed($status,)
+{
+    return "  <span class='text-danger'>$status</span>";
+}
