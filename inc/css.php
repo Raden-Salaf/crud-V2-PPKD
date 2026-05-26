@@ -10,11 +10,12 @@
 
 <!-- Icons. Uncomment required icon fonts -->
 <link rel="stylesheet" href="assets/template/assets/vendor/fonts/boxicons.css" />
+<!-- <link href="assets/template/assets/css/styles.css" rel="stylesheet" /> -->
 
 <!-- Core CSS -->
 <link rel="stylesheet" href="assets/template/assets/vendor/css/core.css" class="template-customizer-core-css" />
 <link rel="stylesheet" href="assets/template/assets/vendor/css/theme-default.css"
-    class="template-customizer-theme-css" />
+class="template-customizer-theme-css" />
 <link rel="stylesheet" href="assets/template/assets/css/demo.css" />
 
 <!-- Vendors CSS -->
@@ -30,3 +31,5 @@
 <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
 <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 <script src="assets/template/assets/js/config.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link href="https://cdn.jsdelivr.net/npm/tinymce@6/skins/ui/oxide/content.min.css" rel="stylesheet">

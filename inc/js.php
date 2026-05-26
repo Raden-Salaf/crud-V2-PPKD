@@ -17,3 +17,16 @@
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+
+<script>
+    tinymce.init({
+        selector: 'textarea#default-editor',
+        plugins: [
+            "advlist", "anchor", "autolink", "charmap", "code", "fullscreen",
+            "help", "image", "insertdatetime", "link", "lists", "media",
+            "preview", "searchreplace", "table", "visualblocks",
+        ],
+        toolbar: "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    });
+</script>
