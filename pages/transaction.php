@@ -1,11 +1,16 @@
 <?php
-$select_category = mysqli_query($koneksi, "SELECT * FROM categories ORDER BY id ASC");
-$categories = mysqli_fetch_all($select_category, MYSQLI_ASSOC);
+$selectCategory = mysqli_query($koneksi, "SELECT * FROM categories ORDER BY id ASC");
+$categories = mysqli_fetch_all($selectCategory, MYSQLI_ASSOC);
+// 1. makanan
+// 3 product, 1 makanan
+// somay, ciki, kopi
 
-$select_product = mysqli_query($koneksi, "SELECT products.*, categories.category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE products.is_active=1 ORDER BY id DESC");
-$products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
+
+$selectProduct = mysqli_query($koneksi, "SELECT products.*, categories.category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE products.is_active = 1 ORDER BY id DESC");
+$products = mysqli_fetch_all($selectProduct, MYSQLI_ASSOC);
+
+// where id_category = $categories['id_categories']
 ?>
-
 <div class="row">
 
     <div class="col-lg-8 p-4">
@@ -15,8 +20,10 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
             foreach ($categories as $key => $cat) {
             ?>
                 <li class="nav-item">
-                    <button class="nav-link <?= $key === 0 ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#tab-pane-<?= $cat['id'] ?>">
-                        <?= htmlspecialchars($cat['category_name']) ?>
+                    <button class="nav-link <?= $key === 0 ? 'active' : '' ?>"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tab-pane-<?= $cat['id'] ?>">
+                        <?= $cat['category_name'] ?>
                     </button>
                 </li>
             <?php
@@ -29,7 +36,7 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
             <?php
             foreach ($categories as $key => $cat) {
             ?>
-                <div class="tab-pane fade  <?= $key === 0 ? 'show active' : '' ?>" id="tab-pane-<?= $cat['id'] ?>">
+                <div class="tab-pane fade <?= $key === 0 ? 'show active' : '' ?>" id="tab-pane-<?= $cat['id'] ?>">
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -37,13 +44,14 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
                             <?php
                             $count = 0;
                             foreach ($products as $p) {
-                                if ($p['category_id'] == $cat['id']) {
+                                if ($p['category_id'] == $cat['id']) { //1 == //1
+                                    $count++;
+                                }
+                                if ($key == 0) {
                                     $count++;
                                 }
                             }
-
                             ?>
-
                             <span class="fs-5"><?= $count ?></span> Products
                         </div>
 
@@ -57,23 +65,23 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
 
                         <?php
                         foreach ($products as $product) {
-                            if ($product['category_id'] == $cat['id'] || $key) {
+                            if ($product['category_id'] == $cat['id'] || $key == 0) {
                         ?>
-
                                 <div class="col-md-4">
 
                                     <div class="card product-card h-100 shadow-sm">
 
                                         <div class="p-3 text-center">
 
-                                            <h6 class="mb-1">Title Book</h6>
+                                            <h6 class="mb-1"><?= $product['product_name'] ?></h6>
 
                                             <small class="text-muted">
-                                                Category Name
+                                                <?= $product['category_name'] ?>
                                             </small>
 
                                             <div class="mt-2">
-                                                <img src="assets/img/default.jpg" class="img-fluid" style="max-height:150px; object-fit:cover;">
+                                                <img src="assets/uploads/<?= $product['product_image'] ?>"
+                                                    class="img-fluid" style="max-height:150px; object-fit:cover;">
                                             </div>
 
                                         </div>
@@ -81,19 +89,21 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
                                         <div class="px-3 pb-3 text-center">
 
                                             <h6 class="fw-bold">
-                                                Rp 0
+                                                Rp <?= number_format($product['price']) ?>
                                             </h6>
 
                                             <p class="text-muted">
-                                                Ready Stock 0 pcs
+                                                Ready Stock <?= $product['qty'] ?> <?= $product['unit'] ?>
                                             </p>
                                         </div>
                                         <div class="px-3 pb-3 d-flex justify-content-center gap-2">
-                                            <button type="button" class="btn btn-success btn-sm btn-detail-book" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                                Detail Book
-                                            </button>
 
-                                            <button type="button" class="btn btn-primary btn-sm">
+                                            <button type="button" class="btn btn-primary btn-sm btn-add-cart" data-id="<?= $product['id'] ?>"
+                                                data-id="<?= $product['id'] ?>"
+                                                data-name="<?= $product['product_name'] ?>"
+                                                data-price="<?= $product['price'] ?>"
+                                                data-image="assets/uploads/<?= $product['product_image'] ?>">
+
                                                 Add To Cart
                                             </button>
                                         </div>
@@ -101,8 +111,8 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
                                     </div>
 
                                 </div>
-
                         <?php
+
                             }
                         }
                         ?>
@@ -113,7 +123,6 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
             <?php
             }
             ?>
-
         </div>
 
     </div>
@@ -129,59 +138,7 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
 
         <div class="card p-3 mt-3 shadow-sm">
 
-            <div class="d-flex align-items-center my-3">
-                <div class="avatar-circle me-3">
-                    U
-                </div>
-
-                <div>
-                    <small class="text-muted">Member</small>
-                    <div class="fw-semibold">
-                        Username
-                    </div>
-                </div>
-            </div>
-
             <div id="order-items" style="max-height: 350px; overflow-y: auto;">
-
-                <div class="card p-2 mb-2 border-0 shadow-sm">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div class="d-flex align-items-center gap-3">
-                            <img class="rounded-circle" src="assets/img/default.jpg" width="45" height="45" style="object-fit: cover;">
-
-                            <div>
-                                <div class="fw-semibold">Title Book</div>
-                                <small class="text-muted">
-                                    Rp 0
-                                </small>
-                            </div>
-                        </div>
-
-                        <a href="#" class="btn btn-sm btn-outline-danger">
-                            X
-                        </a>
-
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center my-3">
-
-                        <div class="d-flex align-items-center gap-1">
-                            <a href="#" class="btn btn-outline-primary btn-sm">-</a>
-
-                            <span class="fw-semibold px-2">0</span>
-
-                            <a href="#" class="btn btn-outline-primary btn-sm">+</a>
-                        </div>
-
-                        <div class="fw-bold">
-                            Rp 0
-                        </div>
-
-                    </div>
-
-                </div>
 
             </div>
 
@@ -291,6 +248,7 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
             </div>
 
             <form action="" method="POST">
+                <input type="text" name="cart-data" id="cart-data" class="form-control">
                 <div class="modal-body p-4">
 
                     <h5 class="mb-3">Pilih Metode Pembayaran</h5>
@@ -370,3 +328,175 @@ $products = mysqli_fetch_all($select_product, MYSQLI_ASSOC);
         </div>
     </div>
 </div>
+
+<script>
+    // Looping Product card
+    // tanpa event delegation
+    // document.querySelectorAll('.product-card').forEach((button) => {
+    //     button.addEventListener('click', function() {
+    //     button/    this.getAttribute('data-id');
+    //     })
+    // });
+
+    // event
+    // e = mewakili semua code dibawah
+    let cart = [];
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('btn-add-cart')) {
+            const id = e.target.getAttribute('data-id');
+            const name = e.target.getAttribute('data-name');
+            const price = e.target.getAttribute('data-price');
+            const image = e.target.getAttribute('data-image');
+
+            // Jika cart-nya sama valuenya dengan yang dikiri dari button atau sudah ada
+            const ex_product = cart.find(item => item.id === id);
+            // Foreach(cart as item)
+            if (ex_product) {
+                ex_product.qty += 1;
+            } else {
+                cart.push({
+                    id,
+                    name,
+                    price,
+                    image,
+                    qty: 1
+                })
+            }
+            render_cart();
+        }
+
+
+
+
+    })
+
+    function render_cart() {
+        const container_cart = document.getElementById('order-items');
+        container_cart.innerHTML = "";
+
+        if (cart.length === 0) {
+            container_cart.innerHTML = "<p class= 'text-muted text-center py-3'>Cart Empty</p>"
+            update_cart();
+            return;
+        }
+
+        // function biasa'
+        // cart.forEach(function(value, index){})
+
+        // arrow function yang umum didunia kerja
+        cart.forEach(value => {
+            const itemHTML = ` 
+                <div class="card p-2 mb-2 border-0 shadow-sm">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div class="d-flex align-items-center gap-3">
+                            <img class="rounded-circle" src="${value.image}" width="45" height="45" style="object-fit: cover;">
+
+                            <div>
+                                <div class="fw-semibold">${value.name}</div>
+                                <small class="text-muted">
+                                    Rp ${value.price}
+                                </small>
+                            </div>
+                        </div>
+
+                        <a href="#" class="btn btn-sm btn-outline-danger btn-delete" data-id = ${value.id}>
+                            X
+                        </a>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center my-3">
+
+                        <div class="d-flex align-items-center gap-1">
+                            <a href="#" class="btn btn-outline-primary btn-sm btn-minus" data-id = ${value.id}>-</a>
+
+                            <span class="fw-semibold px-2">${value.qty}</span>
+
+                            <a href="#" class="btn btn-outline-primary btn-sm btn-plus" data-id = ${value.id}>+</a>
+                        </div>
+
+                        <div class="fw-bold">
+                            Rp ${(value.price * value.qty).toLocaleString('id-ID')}
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+            container_cart.insertAdjacentHTML("beforeend", itemHTML)
+        })
+
+        update_cart();
+    }
+
+
+    document.getElementById('order-items').addEventListener('click', function(e) {
+        const id = e.target.getAttribute('data-id');
+        if (!id) return; // -> jika id tidak ada, maka skip ke bawahnya atau selanjutnya
+
+        const item_index = cart.findIndex(item => item.id === id);
+        if (e.target.classList.contains('btn-plus')) {
+            cart[item_index].qty += 1;
+        } else if (e.target.classList.contains('btn-minus')) {
+            // Jika dicart quantity cuma 1, harusnya itu menghilang
+            if (cart[item_index].qty > 1) {
+                cart[item_index].qty -= 1;
+            } else {
+                // QTY cuma 1 terus mau di minus lagi, maka hilang product di cart-nya
+                cart.splice(item_index, 1)
+            }
+        } else if (e.target.classList.contains('btn-delete')) {
+            cart.splice(item_index, 1)
+        }
+        render_cart();
+
+    })
+
+    function update_cart() {
+        let subtotal = 0;
+        let tax = 0;
+        let discount = 0;
+
+        cart.forEach(item => {
+            subtotal += item.price * item.qty;
+        })
+        tax = subtotal * 0.1;
+        let total = subtotal + tax - discount;
+
+        const formatRupiah = (number) => {
+            return "Rp." + number.toLocaleString('id-ID');
+        }
+
+        document.getElementById('subtotal').innerText = formatRupiah(subtotal);
+        document.getElementById('tax').innerText = formatRupiah(tax);
+        document.getElementById('discount').innerText = formatRupiah(discount);
+        document.getElementById('total-bill').innerText = formatRupiah(total);
+
+        const cartModal = document.querySelector('#paymentModal .border.rounded-3')
+        // Jika cart modal muncul
+        if (cartModal) {
+            const spans = cartModal.querySelectorAll('span');
+            if (spans.length >= 0) {
+                spans[1].innerText = formatRupiah(subtotal);
+                spans[3].innerText = formatRupiah(tax);
+                spans[5].innerText = "-" + formatRupiah(discount);
+                spans[7].innerText = formatRupiah(total);
+            }
+        }
+
+        document.getElementById('cart-data').value = JSON.stringify(cart);
+        // Json : javascript object notation
+    }
+
+    document.getElementById('btn-payment').addEventListener('click', () => {
+        if (cart.length === 0) {
+            alert('Cart is empty');
+
+            // stopPropagation (); => memaksa modal tidak keluar jika data kosong
+            e.stopPropagation();
+        }
+    })
+</script>
